@@ -1,0 +1,10 @@
+<div *ngIf="!isLoggedIn; else loggedIn">
+  <h1>Welcome to NoteNote!</h1>
+  <p>Please login to access your notes.</p>
+  <p-button (click)="login()">Login</p-button>
+</div>
+
+<ng-template #loggedIn>
+  <h1>Welcome back, user!</h1>
+  <p>You're logged in. You can now access your notes.</p>
+</ng-template>
