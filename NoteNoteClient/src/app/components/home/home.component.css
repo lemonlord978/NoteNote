@@ -1,0 +1,25 @@
+/* home.component.scss */
+
+  h1 {
+    font-size: 2rem;
+    color: #007bff;
+  }
+  
+  button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+
+  :host ::ng-deep .p-card .p-card-content {
+    padding: 0px;
+  }
+  
+  

@@ -1,0 +1,65 @@
+<div class="card flex flex-column justify-content-center p-mb-3">
+  <p-selectButton [options]="stateOptions" [(ngModel)]="value" optionLabel="label" optionValue="value"
+    styleClass="p-mb-3"></p-selectButton>
+
+  <!-- Show Login Form if 'Login' is selected -->
+  <div *ngIf="value === 'Login'" class="login-container">
+    <p-card header="Login" styleClass="p-mb-4">
+      <div class="p-fluid">
+        <div class="p-field">
+          <p-floatLabel>
+            <input id="username" type="text" pInputText [(ngModel)]="username" />
+            <label for="username">Username</label>
+          </p-floatLabel>
+        </div>
+
+        <div class="p-field">
+          <p-floatLabel>
+            <p-password id="password" [(ngModel)]="password" name="password" required toggleMask
+              [feedback]="false"></p-password>
+            <label for="password">Password</label>
+          </p-floatLabel>
+        </div>
+
+        <div class="p-field">
+          <p-button label="Login" icon="pi pi-sign-in" (click)="login()" [disabled]="!username || !password"></p-button>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Show Register Form if 'Register' is selected -->
+  <div *ngIf="value === 'Register'" class="register-container">
+    <p-card header="Register" styleClass="p-mb-4">
+      <div class="p-fluid">
+        <div class="p-field">
+          <p-floatLabel>
+            <input id="username" type="text" pInputText [(ngModel)]="username" />
+            <label for="username">Username</label>
+          </p-floatLabel>
+        </div>
+
+        <div class="p-field">
+          <p-floatLabel>
+            <input id="email" type="email" pInputText [(ngModel)]="email" name="email" #emailInput="ngModel" required
+              email />
+            <label for="email">Email</label>
+          </p-floatLabel>
+        </div>
+
+        <div class="p-field">
+          <p-floatLabel>
+            <p-password id="password" [(ngModel)]="password" name="password" required toggleMask
+              [feedback]="true"></p-password>
+            <label for="password">Password</label>
+          </p-floatLabel>
+        </div>
+
+        <div class="p-field">
+          <p-button label="Register" icon="pi pi-user-plus" (click)="register()"
+            [disabled]="!username || !password || !email"></p-button>
+        </div>
+      </div>
+    </p-card>
+  </div>
+</div>

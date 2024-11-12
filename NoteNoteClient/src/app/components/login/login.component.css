@@ -1,0 +1,11 @@
+:host {
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+    height: 70vh;          
+    text-align: center;      
+  }
+
+  .p-field{
+    margin: 4vh;
+  }

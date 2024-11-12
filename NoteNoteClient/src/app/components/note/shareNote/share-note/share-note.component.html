@@ -1,0 +1,25 @@
+<p>share-note works!</p>
+<div class="flex flex-column">
+    <div class="flex justify-content-between align-items-center m-2">
+        <div class="flex flex-row gap-2 align-items-center">
+            <label for="title">Title</label>
+            <input type="text" pInputText [(ngModel)]="this.createUpdateNote.title" style="width: 700px;"
+                [readonly]="true" />
+        </div>
+    </div>
+
+    <div class="flex m-2">
+        <div class="w-2rem">
+            Tag
+        </div>
+        <div class="w-10 p-fluid">
+            <p-chips [(ngModel)]="createUpdateNote.tags" [disabled]="true"></p-chips>
+        </div>
+    </div>
+
+    <div class="editor-container" style="flex-grow: 1; overflow: auto;">
+        <p-editor [(ngModel)]="createUpdateNote.content" [style]="{ height: '90vh' }" [readonly]="true"></p-editor>
+    </div>
+</div>
+
+<p-toast />
