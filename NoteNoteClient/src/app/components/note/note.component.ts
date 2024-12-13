@@ -11,8 +11,8 @@ import { Router } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { RippleModule } from 'primeng/ripple';
-import { Observable, Subject } from 'rxjs';
-import { debounceTime, switchMap } from 'rxjs/operators';
+import { Observable, Subject, throwError } from 'rxjs';
+import { catchError, debounceTime, switchMap, tap } from 'rxjs/operators';
 import { ChipsModule } from 'primeng/chips';
 import { Tag } from '../../models/tag';
 
@@ -102,21 +102,27 @@ export class NoteComponent implements OnInit {
     if (!this.noteId) {
       this.createUpdateNote.userId = Number(localStorage.getItem("userId"));
       return this.apiService.create(this.createUpdateNote).pipe(
-        switchMap(() => {
+        tap(() => {
           this.getNewestNote();
           console.log('Create successful');
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Note created successfully!' });
-          return [];
+        }),
+        catchError((error) => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: error.error.message });
+          return throwError(() => error);
         })
       );
     } else {
       this.createUpdateNote.noteId = this.noteId;
       return this.apiService.update(this.createUpdateNote).pipe(
-        switchMap(() => {
+        tap(() => {
           this.loadNote();
           console.log('Update successful');
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Note updated successfully!' });
-          return [];
+        }),
+        catchError((error) => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: error.error.message });
+          return throwError(() => error);
         })
       );
     }

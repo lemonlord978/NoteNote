@@ -4,6 +4,7 @@ using NoteNote.DBContext;
 using NoteNote.Dtos;
 using NoteNote.Models;
 using NoteNote.Repositories.IReposotories;
+using System.ComponentModel.DataAnnotations;
 
 namespace NoteNote.Repositories
 {
@@ -29,20 +30,36 @@ namespace NoteNote.Repositories
                 throw new ArgumentException("Email already taken.");
             }
 
-            var hashedPassword = _passwordHasher.HashPassword(null, password);
-
             var user = new User
             {
                 Username = username,
-                Password = hashedPassword,
+                Password = password,
                 Email = email,
                 CreatedAt = DateTime.Now
             };
+
+            // Validate the user model
+            var validationContext = new ValidationContext(user);
+            var validationResults = new List<ValidationResult>();
+
+            if (!Validator.TryValidateObject(user, validationContext, validationResults, true))
+            {
+                var errorMessages = string.Join("; ", validationResults.Select(r => r.ErrorMessage));
+                throw new ArgumentException($"Validation failed: {errorMessages}");
+            }
+
+            user.Password = GetHashPassword(password);
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
             return user;
+        }
+
+        private string GetHashPassword(string password)
+        {
+            var hashedPassword = _passwordHasher.HashPassword(null, password);
+            return hashedPassword;
         }
 
         public async Task<User> GetUserByUsernameAsync(string username)

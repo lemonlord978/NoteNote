@@ -8,6 +8,13 @@ interface createNote {
   content: string;
 }
 
+interface createNoteResponse {
+  userId: number;
+  title: string;
+  content: string;
+  message: string;
+}
+
 interface updateNote {
   noteId: number;
   title: string;
@@ -15,53 +22,81 @@ interface updateNote {
   tags: string[]
 }
 
+interface updateNoteResponse {
+  noteId: number;
+  title: string;
+  content: string;
+  tags: string[];
+  message: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class NoteApiService {
 
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  }
+
   private apiUrl = 'http://localhost:5078/api/NoteApi';
 
   constructor(private http: HttpClient) { }
 
-  // note-api.service.ts
   getNotes(userId: number, pageNumber: number = 1, pageSize: number = 10, searchQuery: string = ''): Observable<any> {
     const params = new HttpParams()
       .set('pageNumber', pageNumber.toString())
       .set('pageSize', pageSize.toString())
       .set('searchQuery', searchQuery);
-  
+
     return this.http.get<any>(`${this.apiUrl}/${userId}`, { params });
   }
 
-  create(note: createNote): Observable<createNote> {
+  getAllNotes(userId: number, searchQuery: string = '', orderBy: string = ""): Observable<any> {
+    const params = new HttpParams()
+      .set('userId', userId.toString())
+      .set('searchQuery', searchQuery)
+      .set('$orderby', orderBy);
+
+    return this.http.get<any>(`${this.apiUrl}/`, {
+      headers: this.getHeaders(),
+      params: params
+    });
+  }
+
+  create(note: createNote): Observable<createNoteResponse> {
     const data = {
       userId: note.userId,
       title: note.title,
       content: note.content,
     };
-    return this.http.post<createNote>(`${this.apiUrl}/createNote`, data);
+    return this.http.post<createNoteResponse>(`${this.apiUrl}/createNote`, data, { headers: this.getHeaders() });
   }
 
   getNoteById(noteId: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/getNoteById/${noteId}`);
+    return this.http.get<any>(`${this.apiUrl}/getNoteById/${noteId}`, { headers: this.getHeaders() });
   }
 
-  update(note: updateNote): Observable<updateNote> {
+  shareNote(noteId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/shareNote/${noteId}`, { headers: this.getHeaders() });
+  }
+
+  update(note: updateNote): Observable<updateNoteResponse> {
     const data = {
       noteId: note.noteId,
       title: note.title,
       content: note.content,
       tags: note.tags
     };
-    return this.http.put<updateNote>(`${this.apiUrl}/updateNote`, data);
+    return this.http.put<updateNoteResponse>(`${this.apiUrl}/updateNote`, data, { headers: this.getHeaders() });
   }
 
   delete(noteId: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/deleteNote/${noteId}`);
+    return this.http.delete<any>(`${this.apiUrl}/deleteNote/${noteId}`, { headers: this.getHeaders() });
   }
 
   getNewestNote(userId: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/getNewestNote/${userId}`);
+    return this.http.get<any>(`${this.apiUrl}/getNewestNote/${userId}`, { headers: this.getHeaders() });
   }
 }

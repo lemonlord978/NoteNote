@@ -73,10 +73,6 @@ export class AppComponent implements OnInit {
         }
       },
       {
-        label: 'Notes',
-        icon: 'pi pi-file'
-      },
-      {
         label: 'Contact',
         icon: 'pi pi-envelope'
       }

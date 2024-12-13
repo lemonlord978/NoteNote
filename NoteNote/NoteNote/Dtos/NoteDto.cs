@@ -9,15 +9,6 @@ namespace NoteNote.Dtos
         public string Content { get; set; }
     }
     
-    public class NoteViewDto
-    {
-        public int UserId { get; set; }
-        public int NoteId { get; set; }
-        public string Title { get; set; }
-        public string Content { get; set; }
-        public List<string> Tags { get; set; }
-    }
-    
     public class ViewNoteDto
     {
         public int NoteId { get; set; }

@@ -24,7 +24,7 @@ namespace NoteNote.Services
             return note;
         }
 
-        public async Task<NoteViewDto> ViewNoteById(int noteId)
+        public async Task<ViewNoteDto> ViewNoteById(int noteId)
         {
             var data =  await _noteRepository.ViewNoteById(noteId);
             return data;
@@ -42,9 +42,15 @@ namespace NoteNote.Services
             return data;
         }
 
-        public async Task<NoteViewDto> ViewNewestNoteByUserId(int userId)
+        public async Task<ViewNoteDto> ViewNewestNoteByUserId(int userId)
         {
             var data = await _noteRepository.ViewNewestNoteByUserId(userId);
+            return data;
+        }
+
+        public List<ViewNoteDto> GetNotesQueryable(int userId, string searchQuery)
+        {
+            var data = _noteRepository.GetNotesQueryable(userId, searchQuery);
             return data;
         }
     }

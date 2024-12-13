@@ -12,6 +12,7 @@ import { TagModule } from 'primeng/tag';
 import { PaginatorModule } from 'primeng/paginator';
 import { Subscription } from 'rxjs';
 import { SearchService } from '../../services/search/search.service';
+import { DropdownModule } from 'primeng/dropdown';
 
 @Component({
   selector: 'app-home',
@@ -21,7 +22,8 @@ import { SearchService } from '../../services/search/search.service';
     ButtonModule,
     TagModule,
     CardModule,
-    PaginatorModule
+    PaginatorModule,
+    DropdownModule
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
@@ -42,6 +44,13 @@ export class HomeComponent implements OnInit {
 
   showNotFound: boolean = false;
 
+  selectedOrder: string = "Title asc";
+
+  orderOptions = [
+    { label: 'Order By Asc', value: 'Title asc' },
+    { label: 'Order By Desc', value: 'Title desc' }
+  ];
+
   constructor(private router: Router,
     private datePipe: DatePipe,
     private apiService: UserApiService,
@@ -56,7 +65,6 @@ export class HomeComponent implements OnInit {
     this.searchSubscription = this.searchService.searchQuery$.subscribe(
       (query) => {
         this.searchQuery = query;
-        this.getNote();
       }
     );
   }
@@ -65,7 +73,6 @@ export class HomeComponent implements OnInit {
     const userId = typeof window !== 'undefined' ? Number(localStorage.getItem('userId')) : null;
     if (userId) {
       this.isLoggedIn = true;
-      this.fetchUserDetails(Number(userId));
     }
     this.searchSubscription = this.searchService.searchQuery$.subscribe(
       (query) => {
@@ -81,18 +88,6 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  fetchUserDetails(userId: number): void {
-    this.apiService.getUserById(userId).subscribe(
-      (user) => {
-        this.username = user.username;
-        this.isLoggedIn = true;
-      },
-      (error) => {
-        console.error('Error fetching user details:', error);
-      }
-    );
-  }
-
   login(): void {
     this.router.navigate(['/login']);
   }
@@ -104,14 +99,14 @@ export class HomeComponent implements OnInit {
   getNote(): void {
     const userId = typeof window !== 'undefined' ? Number(localStorage.getItem('userId')) : null;
     if (userId) {
-      this.noteApiService.getNotes(userId, this.currentPage, this.pageSize, this.searchQuery).subscribe(
+
+      this.noteApiService.getAllNotes(userId, this.searchQuery, this.selectedOrder).subscribe(
         (response) => {
           this.showNotFound = false; 
-          this.notes = response.items.map((note: any) => ({
+          this.notes = response.map((note: any) => ({
             ...note,
             updatedAtFormatted: this.formatDate(note.updatedAt),
           }));
-          this.totalItems = response.totalItems;
           console.log('Notes retrieved successfully:', this.notes);
         },
         (error) => {
@@ -123,6 +118,12 @@ export class HomeComponent implements OnInit {
         }
       );
     }
+  }
+
+  onOrderChange(event: any): void {
+    this.selectedOrder = event.value;
+    console.log('Order changed to:', event);
+    this.getNote();
   }
 
   formatDate(dateString: string): string | null {

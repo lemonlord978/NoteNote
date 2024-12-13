@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 interface LoginResponse {
   message: string;
   userId: number;
+  token: string;
 }
 
 interface RegisterResponse {

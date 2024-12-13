@@ -51,7 +51,7 @@ export class ShareNoteComponent implements OnInit {
 
   loadNote(): void {
     if (this.noteId !== null) {
-      this.apiService.getNoteById(this.noteId).subscribe(
+      this.apiService.shareNote(this.noteId).subscribe(
         (response) => {
           console.log('Note loaded successfully:', response);
           this.createUpdateNote.title = response.title;
